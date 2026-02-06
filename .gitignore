@@ -1,0 +1,11 @@
+bin/
+obj/
+*.pdb
+
+config IDE
+*.sln
+*.csproj.user
+.vscode/
+.vs/
+
+*.tmod
