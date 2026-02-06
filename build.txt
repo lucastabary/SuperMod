@@ -1,0 +1,3 @@
+displayName = SuperMod
+author = E&amp;L
+version = 0.1
