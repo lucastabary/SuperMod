@@ -14,7 +14,7 @@ namespace SuperMod.Content.Tiles // Adapte "MonMod" au nom de ton projet
             Main.tileLighted[Type] = false;
 
             MineResist = 1f; // Même résistance que la pierre
-            MinPick = 0; // Pioche de base suffisante
+            MinPick = 100; // Pioche de base suffisante
             
             AddMapEntry(new Color(50, 50, 50)); // Couleur grise foncée sur la map
 
