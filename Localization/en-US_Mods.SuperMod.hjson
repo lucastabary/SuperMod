@@ -3,4 +3,9 @@ Items: {
 		DisplayName: Vulcanic Rock
 		Tooltip: ""
 	}
+
+	WeirdShroom: {
+		DisplayName: Weird Shroom
+		Tooltip: ""
+	}
 }
