@@ -9,3 +9,9 @@ Items: {
 		Tooltip: ""
 	}
 }
+
+NPCs: {
+	MagmaLordBody.DisplayName: Magma Lord Body
+	MagmaLordHand.DisplayName: Magma Lord Hand
+	MagmaLord.DisplayName: Magma Lord
+}
