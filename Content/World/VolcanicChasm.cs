@@ -7,16 +7,21 @@ using Terraria.WorldBuilding;
 
 namespace SuperMod.Content.World
 {
-    public class VulcanicChasm
+    public class VolcanicChasm
     {
+        // Géométrie du gouffre, aussi utilisée par le cône du volcan pour raccorder le cratère
+        public static int StartY => (int)Main.worldSurface - 20;
+        public static int BiomeWidth => Main.maxTilesX / 50;
+        public static int CaveWidth => (int)(BiomeWidth * 0.75);
+
         public static void Generate()
         {
             int centerX = Main.maxTilesX / 2;
-            int startY = (int)Main.worldSurface - 20;
+            int startY = StartY;
             int endY = Main.maxTilesY - 200;
             
-            int biomeWidth = Main.maxTilesX / 50; 
-            ushort tileType = (ushort)ModContent.TileType<Tiles.VulcanicRockTile>();
+            int biomeWidth = BiomeWidth;
+            ushort tileType = (ushort)ModContent.TileType<Tiles.VolcanicRockTile>();
 
             // 1. REMPLISSAGE INITIAL ET ÉROSION EXTÉRIEURE
             for (int y = startY; y < endY; y++)
@@ -80,7 +85,7 @@ namespace SuperMod.Content.World
                 int currentCenterX = centerX + (int)noise;
                 
                 int cleanupRange = biomeWidth + 5; 
-                int caveWidth = (int)(biomeWidth * 0.75);
+                int caveWidth = CaveWidth;
 
                 for (int x = currentCenterX - cleanupRange; x <= currentCenterX + cleanupRange; x++)
                 {
@@ -121,3 +126,5 @@ namespace SuperMod.Content.World
         }
     }
 }
+
+//this biome generation is an inspired and partialy addapted version of the abyss biome from the Calamity Dev Team

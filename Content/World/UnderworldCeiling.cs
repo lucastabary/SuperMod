@@ -10,7 +10,7 @@ namespace SuperMod.Content.World
         public static void Generate()
         {
             int hellBottom = Main.maxTilesY - 200; 
-            ushort tileType = (ushort)ModContent.TileType<Tiles.VulcanicRockTile>();
+            ushort tileType = (ushort)ModContent.TileType<Tiles.VolcanicRockTile>();
 
             // 1. GÉNÉRATION DE LA COQUE SOLIDE
             for (int x = 0; x < Main.maxTilesX; x++)

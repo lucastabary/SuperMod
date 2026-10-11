@@ -5,7 +5,7 @@ using SuperMod.Content.Tiles;
 
 namespace SuperMod.Content.Items.Placeable // Doit être dans un dossier "Items"
 {
-    public class VulcanicRock : ModItem
+    public class VolcanicRock : ModItem
     {
         public override void SetDefaults() {
             // Configuration visuelle et physique
@@ -22,7 +22,7 @@ namespace SuperMod.Content.Items.Placeable // Doit être dans un dossier "Items"
             Item.consumable = true;
 
             // LIEN AVEC LE BLOC
-            Item.createTile = ModContent.TileType<Tiles.VulcanicRockTile>(); 
+            Item.createTile = ModContent.TileType<Tiles.VolcanicRockTile>(); 
         }
     }
 }
