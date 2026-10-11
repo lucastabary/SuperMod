@@ -1,6 +1,6 @@
 Items: {
-	VulcanicRock: {
-		DisplayName: Vulcanic Rock
+	VolcanicRock: {
+		DisplayName: Volcanic Rock
 		Tooltip: ""
 	}
 
@@ -11,7 +11,11 @@ Items: {
 }
 
 NPCs: {
-	MagmaLordBody.DisplayName: Magma Lord Body
 	MagmaLordHand.DisplayName: Magma Lord Hand
 	MagmaLord.DisplayName: Magma Lord
+}
+
+Barrier: {
+	Blocked: A scorching force prevents you from going any further... The master of the volcano awaits at its summit.
+	Lifted: The scorching barrier fades away... The other half of the world is now open!
 }

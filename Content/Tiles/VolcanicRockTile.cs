@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace SuperMod.Content.Tiles // Adapte "MonMod" au nom de ton projet
 {
-    public class VulcanicRockTile : ModTile
+    public class VolcanicRockTile : ModTile
     {
         public override void SetStaticDefaults() {
             Main.tileSolid[Type] = true; // Le bloc est solide

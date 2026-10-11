@@ -8,7 +8,8 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
 {
     public class MagmaLordHand : ModNPC
     {
-        // ── États (localAI[0]) ──────────────────────────────────────────────
+        // ── États (ai[2], le timer est dans ai[3]) ──────────────────────────
+        // ai[] est synchronisé en multijoueur, contrairement à localAI[]
         // 0 = Hover       → frame index 0 (état 1 de la spritesheet)
         // 1 = Dash attack → frame index 0
         // 2 = Fetch       → frame index 1 (état 2 de la spritesheet) — fonce vers joueur
@@ -55,6 +56,8 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
         {
             // ai[0] = Index du boss (MagmaLord)
             // ai[1] = Direction de la main (-1 gauche, 1 droite)
+            // ai[2] = État
+            // ai[3] = Timer de l'état en cours
 
             NPC boss = Main.npc[(int)NPC.ai[0]];
 
@@ -71,6 +74,7 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
             if (player.dead || !player.active) {
                 return;
             }
+            NPC.alpha = Math.Max(NPC.alpha - 15, 0);
 
             // Direction du sprite (miroir inversé)
             NPC.spriteDirection = -(int)NPC.ai[1];
@@ -90,12 +94,12 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
             float distancePlayerToBoss = Vector2.Distance(player.Center, boss.Center);
 
             // ── Machine d'états ────────────────────────────────────────────────
-            switch ((int)NPC.localAI[0])
+            switch ((int)NPC.ai[2])
             {
                 // ── État 0 : Hover ────────────────────────────────────────────
                 case 0:
                     MoveTowards(hoverPosition, hoverSpeed, hoverInertia);
-                    NPC.localAI[1]++;
+                    NPC.ai[3]++;
 
                     // Si le joueur s'éloigne trop → Fetch
                     if (distancePlayerToBoss > FetchDistance)
@@ -105,9 +109,9 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
                     }
 
                     // Timer d'attaque écoulé → Dash
-                    if (NPC.localAI[1] > attackCooldown)
+                    if (NPC.ai[3] > attackCooldown)
                     {
-                        NPC.localAI[1] = 0f;
+                        NPC.ai[3] = 0f;
                         Vector2 chargeDir = player.Center - NPC.Center;
                         if (chargeDir != Vector2.Zero) chargeDir.Normalize();
                         NPC.velocity = chargeDir * dashSpeed;
@@ -118,8 +122,8 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
                 // ── État 1 : Dash / Attaque ───────────────────────────────────
                 case 1:
                     NPC.velocity *= 0.96f;
-                    NPC.localAI[1]++;
-                    if (NPC.localAI[1] > 60f) SwitchState(0);
+                    NPC.ai[3]++;
+                    if (NPC.ai[3] > 60f) SwitchState(0);
                     break;
 
                 // ── État 2 : Fetch (aller chercher le joueur) ─────────────────
@@ -144,9 +148,9 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
                 case 3:
                     MoveTowards(boss.Center, 18f, 10f);
 
-                    // Pousser le joueur vers le boss (seulement en solo ou sur le client)
-                    // Le push est visuel/gameplay ; la logique réseau reste serveur
-                    if (Main.netMode != NetmodeID.Server)
+                    // Pousser le joueur vers le boss : seul le client du joueur ciblé
+                    // déplace son propre joueur (la position est ensuite synchronisée)
+                    if (player.whoAmI == Main.myPlayer)
                     {
                         Vector2 pushDir = boss.Center - player.Center;
                         float dist = pushDir.Length();
@@ -174,8 +178,8 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
 
         private void SwitchState(int newState)
         {
-            NPC.localAI[0] = newState;
-            NPC.localAI[1] = 0f;
+            NPC.ai[2] = newState;
+            NPC.ai[3] = 0f;
             if (Main.netMode != NetmodeID.MultiplayerClient)
                 NPC.netUpdate = true;
         }
@@ -193,20 +197,19 @@ namespace SuperMod.Content.NPCs.Bosses.MagmaLord
 
         private void Despawn() {
             NPC.velocity *= 0.95f;
-            NPC.alpha += 5;
+            NPC.alpha = Math.Min(NPC.alpha + 5, 255);
 
-            if (NPC.alpha >= 255) {
+            // Seul le serveur fait disparaître la main, les clients suivent
+            if (NPC.alpha >= 255 && Main.netMode != NetmodeID.MultiplayerClient) {
                 NPC.active = false;
-                if (Main.netMode != NetmodeID.MultiplayerClient) {
-                    NPC.netUpdate = true;
-                }
+                NetMessage.SendData(MessageID.SyncNPC, number: NPC.whoAmI);
             }
         }
 
         public override void FindFrame(int frameHeight)
         {
             // Correspondance état → frame de la spritesheet (chaque frame = 89px)
-            int frameIndex = (int)NPC.localAI[0] switch {
+            int frameIndex = (int)NPC.ai[2] switch {
                 2 => 1,   // Fetch  → frame 2 (index 1)
                 3 => 2,   // Return → frame 3 (index 2)
                 _ => 0,   // Hover / Dash → frame 1 (index 0)
