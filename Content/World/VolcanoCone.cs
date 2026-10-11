@@ -37,7 +37,7 @@ namespace SuperMod.Content.World
 
             for (int x = centerX - baseRadius; x <= centerX + baseRadius; x++)
             {
-                if (!WorldGen.InWorld(x, 0, 10))
+                if (!WorldGen.InWorld(x, Main.maxTilesY / 2, 10))
                     continue;
 
                 int distance = Math.Abs(x - centerX);
@@ -80,7 +80,7 @@ namespace SuperMod.Content.World
             List<int> heights = new List<int>();
             for (int x = centerX - radius; x <= centerX + radius; x += 5)
             {
-                if (!WorldGen.InWorld(x, 0, 10))
+                if (!WorldGen.InWorld(x, Main.maxTilesY / 2, 10))
                     continue;
 
                 int y = WorldGenHelper.FindSurface(x);
